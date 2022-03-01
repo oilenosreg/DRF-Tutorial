@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+var csrftoken = getCookie('csrftoken');
+
+        const data = new FormData();
+        data.append('title', 'prueba');
+        data.append('code', 'print("hola mundo")');
+        data.append('linenos', true);
+        data.append('language', 'python');
+        data.append('style', 'vim');
+        data.append('owner', '1');
+        data.append('highlighted', '');
+
+        fetch('http://localhost:8000/snippets/', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            credentials: "same-origin",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },            
+        })
+        .then(function(response) {
+            if(response.ok) {
+                return response.text();                
+            } else {
+                throw 'Error en llamada Ajax';
+            }
+        })
+        .then(function(texto) {
+   console.log(texto);
+})
+.catch(function(err) {
+   console.log(err);
+});
+    </script>
+</body>
+</html>
